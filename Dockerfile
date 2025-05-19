@@ -1,9 +1,13 @@
 FROM php:8.2-fpm
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpq-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_pgsql mbstring xml
+    git curl zip unzip libzip-dev libonig-dev libxml2-dev \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libicu-dev g++ libpq-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_pgsql intl gd zip mbstring xml
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -17,11 +21,8 @@ COPY . .
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate key (if needed)
-# RUN php artisan key:generate
-
-# Expose port Laravel will run on
+# Expose the Laravel port
 EXPOSE 8000
 
-# Run Laravel server
+# Start the Laravel server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
