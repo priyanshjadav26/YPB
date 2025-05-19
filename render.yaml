@@ -12,9 +12,7 @@ services:
         value: production
       - key: APP_KEY
         sync: false
-      # Add more environment variables as needed
 
-# Add a migration job
 jobs:
   - name: migrate-db
     type: manual
