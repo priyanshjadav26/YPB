@@ -1,8 +1,9 @@
 services:
   - type: web
     name: ypb
-    region: oregon
+    runtime: manual
     plan: free
+    region: oregon
     buildCommand: |
       composer install --no-dev --optimize-autoloader
       php artisan config:cache
@@ -18,4 +19,3 @@ services:
         value: https://ypb.onrender.com
       - key: APP_KEY
         generateValue: true
-              
